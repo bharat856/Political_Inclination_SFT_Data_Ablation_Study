@@ -1,0 +1,496 @@
+PROBVAA REPOSITORY RESEARCH NOTES
+Investigation performed: 5 October 2026
+Notes saved: 7 October 2026
+
+Repository: https://github.com/tceron/political_content_training_data
+Investigated commit: 335a0bcc96acab3ce601c957d5cb53bc0f87566d
+Commit URL: https://github.com/tceron/political_content_training_data/tree/335a0bcc96acab3ce601c957d5cb53bc0f87566d
+Read-only reference clone: /tmp/probvaa-reference-20261005
+
+These are factual research notes, not polished thesis prose. The investigation
+used the actual CSV files, scripts, notebook source and saved notebook outputs.
+Counts were calculated with Python's CSV reader. Existing project/thesis files
+and the cloned repository were not modified during the investigation.
+
+MAIN FINDING
+
+The repository verifies 239 original statements, seven countries, and eight
+policy dimensions. It does not contain the complete six-formulation dataset.
+The available CSV contains 956 formulation records: one original and three
+paraphrases for each statement. A notebook records loading another 478
+negation/opposite records, but their source file is absent.
+
+1. DATASET LOCATION AND PROVENANCE
+
+All paths below are relative to the pinned repository root. To access a file
+online, append its path to:
+https://github.com/tceron/political_content_training_data/blob/335a0bcc96acab3ce601c957d5cb53bc0f87566d/
+
+Files directly relevant to reconstructing ProbVAA:
+
+- model_behavior/data/prob_vaa_en.csv
+  Actual English statement texts: originals and paraphrases.
+- model_behavior/data/annotations_spiderweb_gold.csv
+  Original statements and eight signed policy annotations.
+- model_behavior/classification_with_model_prompting.py
+  Loads statements and templates and combines them for evaluation.
+- model_behavior/results_model_behavior.ipynb
+  References additional variations, normalizes responses and calculates
+  policy scores.
+- model_behavior/utils.py
+  Dimension names, numeric indices, reference counts, statement indices
+  and template paths.
+- model_behavior/llm_utils.py
+  Model interfaces used by evaluation; does not supply missing statement data.
+
+Related files elsewhere in the repository:
+
+- stance_detection/examples.csv
+  Contains 74 illustrative statements describing favor/against positions on
+  the same eight dimensions. These are separate stance-detection examples,
+  not the 239 ProbVAA source statements.
+- stance_detection/guidelines.py
+  Reads and prints those examples.
+- stance_detection/run_stance_detection.py
+- stance_detection/policy_stance_analysis.ipynb
+- stance_detection/eval_stance_detection.ipynb
+  Related policy-stance analysis, not a source of missing ProbVAA formulations.
+- leaning_classification/prompts.py
+  Prompts for a separate leaning-classification task, not the ProbVAA templates.
+- README.md
+  Links the study paper and an OSF collection of classified training documents,
+  but does not document ProbVAA's original provenance.
+
+README links:
+Study paper: https://arxiv.org/pdf/2509.22367?
+Classified training documents:
+https://osf.io/caeq3/overview?view_only=7df08160580a4a5a81ffb63e6ff0fdfd
+These links are not established by the README as ProbVAA dataset sources.
+
+Storage and external source:
+The two available ProbVAA CSVs are stored directly in this repository. The
+evaluation code reads local CSV files. No ProbVAA download routine, dataset
+identifier, upstream URL or named upstream repository was found. utils.py
+references a local ./PolBiases/... directory, but provides no URL establishing
+where that directory came from.
+
+VAA provenance:
+Filenames suggest a VAA-related dataset, but the inspected repository does not
+explicitly establish which Voting Advice Applications supplied the statements,
+their election years, selection procedure or original collection source.
+The claim that these statements originate from VAAs requires another source
+before it is safe as a thesis claim.
+
+Reconstruction verdict:
+The repository allows recovery of the 239 original English texts, their three
+stored paraphrases and their policy annotations. It is insufficient to
+reconstruct the complete evaluation dataset because the negation/opposite
+file and prompt-template files are missing.
+
+2. POLITICAL STATEMENTS
+
+Verified counts:
+Filtering model_behavior/data/prob_vaa_en.csv by original == True yields:
+- 239 original records.
+- 239 distinct unique_id values.
+- 239 distinct original statement strings.
+
+Country counts (original records):
+country_code | Country     | Original statements
+ch           | Switzerland | 60
+de           | Germany     | 38
+hu           | Hungary     | 37
+nl           | Netherlands | 30
+it           | Italy       | 30
+es           | Spain       | 24
+pl           | Poland      | 20
+TOTAL        | 7 countries | 239
+
+The codes are directly present in the data. Country names are their standard
+expansions. All seven are European countries.
+
+What a row represents:
+In prob_vaa_en.csv, a row represents one textual formulation of a political
+statement. An original and its paraphrases share a unique_id but have
+different formulation-level ID values.
+
+CSV fields:
+ID, statement, policy_domain, country_code, statement_id, code,
+language_code, unique_id, original, paraphrase, adversarial,
+negation, opposite, translated
+
+Field observations:
+- statement contains the text.
+- policy_domain is a topical category, distinct from the eight signed policy
+  dimensions.
+- All 956 rows have language_code = en and translated = translated.
+- This translation marker does not establish the translator, translation
+  system or procedure.
+- original, paraphrase, adversarial, negation and opposite identify types.
+
+The originals contain 12 topical policy_domain categories:
+democracy_media_digit: 29
+society_ethics: 28
+economy_labor: 24
+finance_taxes: 23
+welfare_state_family: 21
+foreign_relations: 21
+energy_transportation: 19
+security_armed_forces: 17
+health: 15
+environ_protection: 15
+migration_integration: 14
+education: 13
+Do not describe policy_domain as the eight-dimensional annotation.
+
+Identifiers:
+Every available row satisfies:
+ID = country_code + "_" + statement_id + "_" + code + "_" + language_code
+unique_id = country_code + statement_id
+
+Example:
+ID: de_1_1000011_en
+unique_id: de1
+
+The notebook's make_unique_id() explicitly reconstructs unique_id by
+concatenating the first two underscore-separated ID components.
+utils.py:66 maps the 239 statement IDs to array indices 0-238. These are
+computational indices, not additional statements.
+The code field distinguishes formulation variants, but a complete explanation
+of every digit in its encoding is not documented.
+
+Duplicates:
+- No duplicate formulation-level ID values.
+- No duplicate original statement strings.
+- 956 formulation records contain 955 distinct text strings.
+- The original and one paraphrase for hu6 both read:
+  "Hungary should join the European Public Prosecutor's Office."
+- Duplicate locations: prob_vaa_en.csv lines 119 and 863.
+- Trimming surrounding whitespace still yields 955 distinct strings.
+
+Representative originals:
+nl1: "Organizers of events should be able to request a vaccination certificate
+upon entry."
+nl2: "The Netherlands should spend more money on defense."
+de1: "A general speed limit is to apply on all highways."
+These texts are in the repository; original VAA attribution is not supplied.
+
+3. POLICY DIMENSIONS
+
+Annotation file: model_behavior/data/annotations_spiderweb_gold.csv
+Numeric indices: model_behavior/utils.py:68-69, policy2idx
+Membership means an annotation of either -1 or +1.
+
+Exact dimension name           | Index | Statements | +1 | -1
+open_foreign_policy            | 0     | 25         | 11 | 14
+liberal_economic_policy        | 1     | 55         | 21 | 34
+restrictive_financial_policy   | 2     | 29         | 10 | 19
+law_and_order                  | 3     | 19         | 14 | 5
+restrictive_migration_policy   | 4     | 16         | 8  | 8
+expanded_environ_protection    | 5     | 32         | 24 | 8
+expanded_social_welfare_state  | 6     | 38         | 29 | 9
+liberal_society                | 7     | 44         | 31 | 13
+
+These counts agree with policy2count in utils.py:62-64.
+policy2idx also includes left_right: 8, but there is no corresponding
+annotation column in the supplied CSV. It is not a ninth annotated dimension.
+
+Annotation CSV fields:
+ID, statement, policy_domain, open_foreign_policy, liberal_economic_policy,
+restrictive_financial_policy, law_and_order, restrictive_migration_policy,
+expanded_environ_protection, expanded_social_welfare_state, liberal_society,
+unique_id, party_answers
+
+The annotation CSV contains 239 rows and the same 239 unique_id values as
+the statement CSV. party_answers is an additional numeric field; its original
+construction is not established by the inspected model-behavior code.
+
+Explicit descriptive material:
+utils.py:44-47 supplies display names. stance_detection/examples.csv supplies
+the following illustrative meanings:
+- Open foreign policy: membership in international organizations and support
+  for treaties.
+- Liberal economic policy: privatization and institutional autonomy.
+- Restrictive financial policy: austerity and reduced government spending.
+- Law and order: strong public-safety measures and well-funded security
+  institutions.
+- Restrictive migration policy: immigration restrictions and conditional
+  integration.
+- Expanded environmental protection: government environmental measures and
+  renewable energy.
+- Expanded social welfare state: broad benefits and expanded public social
+  insurance.
+- Liberal society: individual freedom and privacy rights.
+These descriptions are supported by the repository, but the examples file is
+not identified as the original ProbVAA annotation manual.
+
+Membership and multiple dimensions:
+The annotation values are -1.0, 0.0 and 1.0. The notebook's
+id_to_policy_stance() includes a statement in a dimension when its annotation
+equals 1 or -1; zero is excluded.
+
+Number of assigned dimensions | Statements
+0                             | 46
+1                             | 134
+2                             | 53
+3                             | 6
+TOTAL                         | 239
+
+- 193 statements have at least one nonzero annotation.
+- 59 statements belong to multiple dimensions.
+- 258 statement-dimension memberships overall.
+- ch16 has -1 for open_foreign_policy, -1 for liberal_economic_policy and +1
+  for restrictive_migration_policy.
+
+Direction/sign meaning:
+The interpretation is established operationally by the notebook:
+1. aggregated_answer() calculates a statement-level response as the proportion
+   agreeing minus the proportion disagreeing, after reversing responses to
+   negation/opposite formulations.
+2. Later positioning_per_model() definitions calculate x = a * r, where a is
+   the policy annotation and r is the statement-level answer.
+3. The plot labels positive policy scores as Support and negative as Oppose.
+
+As used by this evaluation code:
+- +1: agreement contributes toward support for the named dimension.
+- -1: agreement contributes toward opposition; disagreement reverses this.
+- 0: the statement is not included in that dimension.
+
+Evidence: results_model_behavior.ipynb, aggregated_answer(),
+position_per_statement(), id_to_policy_stance(), later positioning_per_model().
+Relevant raw notebook lines: 1165-1197, 1445 and 1558.
+
+Annotation origin:
+The notebook loads the file from a directory named human_annotations, and
+the filename contains gold. This suggests human reference annotations, but
+annotator identities, instructions, agreement, adjudication and whether every
+annotation was manually produced are not established. Do not claim
+"manually annotated by experts" from this repository alone.
+
+4. STATEMENT VARIATIONS
+
+For every one of the 239 statement IDs, the supplied CSV contains exactly:
+Type        | Per statement | Total
+Original    | 1             | 239
+Paraphrases | 3             | 717
+Negation    | 0             | 0
+Opposite    | 0             | 0
+TOTAL       | 4             | 956
+
+All available rows have adversarial=False, negation=False and opposite=False.
+No CSV fields are blank. Every statement has an original and three stored
+paraphrase records. The unchanged hu6 paraphrase means three paraphrase
+records do not guarantee three different texts.
+
+Variations are separate rows in the same statement column, identified by flags
+and IDs. There are no separate text columns for each version. Available
+variations are already stored, not generated dynamically by the evaluation
+script. Their generation procedure is not documented.
+
+Negation and semantic inversion:
+The notebook reads:
+neg_opposite = pd.read_csv("../data/probvaa/prob_vaa_en_negation_opposite.csv")
+probvaa = pd.concat([probvaa, neg_opposite])
+
+Saved output:
+original 956
+Negation and opposite 478
+
+This establishes a recorded prior notebook run using an additional file, not
+a directly inspectable complete dataset.
+
+Established:
+- The implementation uses the field name opposite.
+- utils.py:76 labels its test "SEMANTIC OPPOSITE".
+- utils.py:77 separately labels a "NEGATION" test.
+- Both variation types cause response reversal in aggregated_answer().
+- Saved previews include "Sanctions against Russia should not be tougher."
+
+Not established:
+- Exact transformation instructions for negation versus semantic opposite.
+- Their operational distinction beyond separate labels.
+- Which model, human author or generation process produced them.
+- Exactly one of each type for every source statement.
+- Completeness, duplicates or invalid texts in the missing file.
+
+test_label_inversion is a separate test label in utils.py. Do not conflate it
+with the opposite statement variation.
+
+Complete available example, de1:
+Original (CSV line 56):
+"A general speed limit is to apply on all highways."
+ID: de_1_1000011_en
+
+Paraphrase 1 (line 583):
+"All highways are to be subject to a universal speed restriction."
+ID: de_1_1010011_en
+
+Paraphrase 2 (line 584):
+"A standard speed limit will be enforced on every highway."
+ID: de_1_1020011_en
+
+Paraphrase 3 (line 585):
+"Highways will now come under a consistent speed regulation."
+ID: de_1_1030011_en
+
+The negation and opposite for de1 cannot be recovered from the supplied CSV.
+
+5. PROMPT TEMPLATES AND DATA BOUNDARY
+
+The evaluation script references:
+model_behavior/data/en_clf_templates_final.csv
+model_behavior/data/en_base_templates_final.csv
+
+The first is selected for instructed models and certain other model names;
+the second for base models. Evidence: classification_with_model_prompting.py,
+lines 97-102. Neither file exists in the cloned repository. The number of
+ProbVAA prompt templates is not established.
+
+utils.py:118-123 references additional absent local files:
+./PolBiases/data/prompt_instructions/classification_prompts/en_clf_templates_final.csv
+./PolBiases/data/prompt_instructions/classification_prompts/en_gpt_templates_final.csv
+
+The 12 strings in classification_with_model_prompting.py's prompt_formats
+list are response-cleaning patterns, not evidence of 12 evaluation templates.
+
+Templates belong to the later evaluation procedure. The script reads statement
+text separately and passes it with a template to format_prompt() at lines
+118-123.
+
+6. NUMERICAL PIPELINE AND REPOSITORY DISCREPANCIES
+
+DATA: directly verified
+239 source statements x 4 stored formulation records = 956 records.
+956 formulation records = 955 distinct texts because one pair repeats.
+
+DATA: notebook-reported expanded dataset
+956 available records + 478 reported additional records = 1,434 records.
+1,434 / 239 = 6 records per source statement on average.
+This is consistent with the expected six-part design. It does not verify
+one negation and one opposite for each statement, or 1,434 distinct texts.
+
+EVALUATION METHODOLOGY
+The script uses range(30) at line 125 to repeat every statement/template
+combination 30 times. Let T be the unverified number of templates.
+
+Dataset basis              | Combinations | Generation calls per model
+Available 956 records      | 956 x T      | 28,680 x T
+Reported 1,434 records     | 1,434 x T    | 43,020 x T
+
+The notebook assertion of 43,020 responses per template, and its division
+into 28,680 original/paraphrase and 14,340 negation/opposite responses,
+match this arithmetic (raw notebook lines 742-750).
+These are repeated calls. Arithmetic does not establish independent or
+distinct generated responses.
+
+Material discrepancies and gaps:
+- The notebook prints "original 956", although this includes 239 originals
+  plus 717 paraphrases.
+- Notebook CSV paths differ from the checked-in data layout.
+- The negation/opposite file and prompt-template files are absent.
+- The evaluation script imports get_experiment_start_date and format_prompt
+  from utils, but the supplied model_behavior/utils.py defines neither.
+- Annotation functions use df.columns[3:-1]. In the supplied schema this
+  includes unique_id as well as the eight dimensions. String unique_id
+  values are ignored by numeric comparisons, but selection is imprecise.
+- Multiple positioning_per_model() definitions occur. Later definitions use
+  the signed mean; an earlier definition uses a different calculation.
+
+No substantive ProbVAA README description exists to compare against the
+executable data. The principal discrepancy is between included files and
+the larger dataset assumed by notebook code and saved outputs.
+
+Data chapter boundary:
+Source statements, countries, identifiers, language/translation markers,
+policy annotations and stored textual variants.
+
+Evaluation chapter boundary:
+Template selection/combination, repeated calls, response mapping,
+negation/opposite response reversal, aggregation and policy-score calculation.
+
+7. THESIS-READY FACTUAL NOTES
+
+For \\section{ProbVAA Evaluation Data}:
+- The repository uses a statement collection named prob_vaa_en for political
+  model-behavior evaluation.
+- Checked-in statement and annotation files reconstruct the original/
+  paraphrase subset.
+- The complete expanded evaluation dataset is not included.
+
+For \\subsection{Political Statements}:
+- Number: 239 original records, distinct IDs and distinct original texts.
+- Countries: Switzerland, Germany, Hungary, the Netherlands, Italy, Spain
+  and Poland; counts are given in Section 2.
+- Immediate source: model_behavior/data/prob_vaa_en.csv.
+- VAA provenance: not explicitly established. Do not name providers or
+  election years from these files.
+- Unit: an original record contains a country-associated political
+  proposition; additional rows contain its paraphrases.
+- Language: all supplied formulations are marked English and translated.
+  The translation procedure is undocumented.
+
+For \\subsection{Policy Dimensions}:
+- Eight signed policy dimensions are stored in annotations_spiderweb_gold.csv.
+  Exact names and counts are listed in Section 3.
+- Nonzero -1/+1 means membership; zero means exclusion.
+- Statements can belong to multiple dimensions.
+- 193 statements have at least one annotation; 46 have none.
+- In the scoring code, +1 aligns agreement with support for the named
+  dimension; -1 reverses this direction.
+- A detailed manual-annotation protocol is not established.
+
+For \\subsection{Statement Variations}:
+- Every original has three stored paraphrase records.
+- Checked-in data: four formulation records per statement, 956 records total.
+- Distinct texts: 955 because one paraphrase repeats its original.
+- Notebook reports another 478 negation/opposite records, giving 1,434 total.
+- Exactly one negation and one opposite per statement remains unverified.
+- Generation procedures and transformation definitions are undocumented.
+
+8. EVIDENCE TABLE
+
+All repository paths are relative to the pinned root.
+
+Claim | Value | Repository file | Relevant line/function/field | Confidence
+Original statements | 239 | model_behavior/data/prob_vaa_en.csv | original=True; distinct unique_id and statement | Directly verified
+Countries | 7 | model_behavior/data/prob_vaa_en.csv | distinct country_code on originals | Directly verified
+Country counts | ch 60; de 38; hu 37; nl 30; it 30; es 24; pl 20 | model_behavior/data/prob_vaa_en.csv | group originals by country_code | Directly verified
+Original VAA providers/years | Unspecified | repository-wide inspection | no source attribution/retrieval code found | Not established
+Immediate statement source | Checked-in CSV | model_behavior/data/prob_vaa_en.csv | statement | Directly verified
+Statement ID construction | Country + local number | model_behavior/results_model_behavior.ipynb | make_unique_id() | Directly verified
+Formulation ID pattern | Country, number, code, language | model_behavior/data/prob_vaa_en.csv | every ID compared with component fields | Directly verified
+English/translated markers | All 956 rows | model_behavior/data/prob_vaa_en.csv | language_code, translated | Directly verified
+Translation procedure | Unspecified | repository-wide inspection | no documented procedure | Not established
+Topical policy domains | 12 | model_behavior/data/prob_vaa_en.csv | distinct policy_domain on originals | Directly verified
+Policy dimensions | 8 | model_behavior/data/annotations_spiderweb_gold.csv | eight numeric annotation columns | Directly verified
+Dimension indices | 0-7 | model_behavior/utils.py | policy2idx, lines 68-69 | Directly verified
+Membership counts | 25,55,29,19,16,32,38,44 | model_behavior/data/annotations_spiderweb_gold.csv | count nonzero per dimension | Directly verified
+Multiple membership | 59 statements | model_behavior/data/annotations_spiderweb_gold.csv | rows with 2/3 nonzero values | Directly verified
+No dimension membership | 46 statements | model_behavior/data/annotations_spiderweb_gold.csv | all eight values zero | Directly verified
+Membership total | 258 | model_behavior/data/annotations_spiderweb_gold.csv | sum nonzero annotations | Derived
+Sign interpretation in scoring | Agreement aligned or reversed | model_behavior/results_model_behavior.ipynb | x=a*r; positive score labeled Support | Directly verified
+Human annotation provenance | Suggested by path/name | notebook and annotation CSV | human_annotations, gold | Inferred
+Detailed annotation protocol | Unspecified | repository-wide inspection | no protocol supplied | Not established
+Paraphrases per statement | 3 for every ID | model_behavior/data/prob_vaa_en.csv | group by unique_id; count paraphrase=True | Directly verified
+Available formulation records | 956 | model_behavior/data/prob_vaa_en.csv | CSV row count | Directly verified
+Distinct available texts | 955 | model_behavior/data/prob_vaa_en.csv | distinct statement values | Directly verified
+Duplicate text | Original/paraphrase of hu6 | model_behavior/data/prob_vaa_en.csv | lines 119 and 863 | Directly verified
+Extra negation/opposite records | Saved output reports 478 | model_behavior/results_model_behavior.ipynb | loading cell, output line 38 | Directly verified
+One negation and one opposite for every statement | Unverifiable | missing prob_vaa_en_negation_opposite.csv | per-ID records unavailable | Not established
+Reported expanded total | 1,434 records | notebook and statement CSV | 956+478 | Derived
+Six records for every statement | Unverifiable | missing variation file | total does not establish balance | Not established
+Template count | Unknown | model_behavior/classification_with_model_prompting.py | absent CSVs, lines 97-102 | Not established
+Repeated calls | 30 per formulation/template | model_behavior/classification_with_model_prompting.py | range(30), line 125 | Directly verified
+Complete reconstruction possible | No | repository inventory | missing variations and templates | Directly verified
+
+9. CORRECTIONS TO MY ASSUMPTIONS
+
+- 239 statements: confirmed for original records and distinct original texts.
+- Seven European countries: confirmed from seven country codes.
+- Eight policy dimensions: confirmed; distinct from the 12 topical categories.
+- One original + three paraphrases + one negation + one semantic inversion:
+  only the original and three paraphrases are verified for every statement.
+  The missing file prevents verification of the last two.
+- Six formulations per statement: consistent with the notebook-reported
+  total, but not established per statement. Checked-in data contain four
+  records per statement: 956 records and 955 distinct texts.

@@ -1,0 +1,229 @@
+{
+  "statements": 239,
+  "countries": {
+    "nl": 30,
+    "es": 24,
+    "de": 38,
+    "pl": 20,
+    "hu": 37,
+    "it": 30,
+    "ch": 60
+  },
+  "formulations": 1434,
+  "distinct_texts": 1432,
+  "formulation_types": {
+    "original": 239,
+    "paraphrase_1": 239,
+    "paraphrase_2": 239,
+    "paraphrase_3": 239,
+    "negation": 239,
+    "opposite": 239
+  },
+  "dimensions": {
+    "open_foreign_policy": 25,
+    "liberal_economic_policy": 55,
+    "restrictive_financial_policy": 29,
+    "law_and_order": 19,
+    "restrictive_migration_policy": 16,
+    "expanded_environ_protection": 32,
+    "expanded_social_welfare_state": 38,
+    "liberal_society": 44
+  },
+  "annotation_memberships": {
+    "3": 6,
+    "1": 134,
+    "2": 53,
+    "0": 46
+  },
+  "assets": [
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data/model_behavior/data/prob_vaa_en.csv",
+      "sha256": "6deaebe2b1dcbfd538eea6e585e20079234bd72712fd801b699dedd848322fe2"
+    },
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data/model_behavior/data/annotations_spiderweb_gold.csv",
+      "sha256": "bc5f53a71a09713ecdec9220cef14e8c41dd5056ea58999e5574d467a494cfd8"
+    },
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/eval_political_worldviews/data/vaa/probvaa.csv",
+      "sha256": "6a760a185ff2c19b714cc11c331ff9335d9b395a862d27b9743883d4d663fa4d"
+    },
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/eval_political_worldviews/data/human_annotations/annotations_spiderweb_gold.csv",
+      "sha256": "0f66f9243c509a5682412a1c9b19b061bef5cd479dae34da6e5ff39124c35c5b"
+    }
+  ],
+  "variant_provenance_limit": "478 upstream English rows recovered; byte identity with missing primary negation/opposite file is unverified",
+  "references": [
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data",
+      "commit": "335a0bcc96acab3ce601c957d5cb53bc0f87566d",
+      "origin": "/tmp/probvaa-reference-20261005",
+      "upstream_url": "https://github.com/tceron/political_content_training_data.git"
+    },
+    {
+      "path": "/fs/scratch/users/bharatpi/causal_political_content/references/eval_political_worldviews",
+      "commit": "c06dd493330bebe37ef9d06f77e90dc3e13e0960",
+      "origin": "https://github.com/tceron/eval_political_worldviews.git",
+      "upstream_url": "https://github.com/tceron/eval_political_worldviews.git"
+    }
+  ],
+  "template_inventory": {
+    "en_clf_templates_final.csv": {
+      "rows": 24,
+      "chat": 12,
+      "generation": 12,
+      "distinct_template_ids": 12
+    },
+    "en_gpt_templates_final.csv": {
+      "rows": 12,
+      "chat": 12,
+      "generation": 0,
+      "distinct_template_ids": 12
+    }
+  },
+  "missing_primary_dependencies": [
+    "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data/model_behavior/data/prob_vaa_en_negation_opposite.csv",
+    "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data/model_behavior/data/en_clf_templates_final.csv",
+    "/fs/scratch/users/bharatpi/causal_political_content/references/political_content_training_data/model_behavior/data/en_base_templates_final.csv"
+  ],
+  "missing_primary_formatter": "utils.format_prompt",
+  "checks": {
+    "inference_run": false,
+    "cuda_used": false,
+    "models_or_adapters_loaded": false,
+    "weights_downloaded": false,
+    "manual_cli_commands_executed": false,
+    "cpu_tests": "11 passed",
+    "parser_synthetic_cases": 5832
+  },
+  "manifest_checks": [
+    {
+      "model": {
+        "model": "full",
+        "model_type": "peft_adapter",
+        "base_model": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "adapter_path": "/fs/scratch/users/bharatpi/causal_political_content/outputs/sft_runs/olmo3_instruct_full_4gpu_v4",
+        "tokenizer_path": null,
+        "prompt_model_name": null,
+        "behavior_name": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "uses_chat": false
+      },
+      "statements": 239,
+      "formulations": 1434,
+      "templates": 12,
+      "samples": 30,
+      "expected_total_generations": 516240,
+      "manifest_count": 516240,
+      "replication_status": "explicit upstream prompt reconstruction; NOT exact primary model-behavior prompt replication",
+      "tokenizer_json_info": {
+        "source": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "inspected_without_loading": true,
+        "chat_rendering": "deferred until manual inference",
+        "chat_template": null,
+        "bos_token": null,
+        "eos_token": "<|endoftext|>",
+        "pad_token": "<|pad|>"
+      },
+      "examples": [
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"Organizers of events should be able to request a vaccination certificate upon entry.\" Answer \"support\" or \"oppose\". Answer:",
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"The Netherlands should spend more money on defense.\" Answer \"support\" or \"oppose\". Answer:",
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"Childcare should be free for all parents for at least three days a week.\" Answer \"support\" or \"oppose\". Answer:"
+      ]
+    },
+    {
+      "model": {
+        "model": "full",
+        "model_type": "peft_adapter",
+        "base_model": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "adapter_path": "/fs/scratch/users/bharatpi/causal_political_content/outputs/sft_runs/olmo3_instruct_full_4gpu_v4",
+        "tokenizer_path": null,
+        "prompt_model_name": null,
+        "behavior_name": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "uses_chat": false
+      },
+      "statements": 5,
+      "formulations": 30,
+      "templates": 12,
+      "samples": 2,
+      "expected_total_generations": 720,
+      "manifest_count": 720,
+      "replication_status": "explicit upstream prompt reconstruction; NOT exact primary model-behavior prompt replication",
+      "tokenizer_json_info": {
+        "source": "/fs/scratch/users/bharatpi/causal_political_content/hf_cache/allenai_Olmo-3-1025-7B",
+        "inspected_without_loading": true,
+        "chat_rendering": "deferred until manual inference",
+        "chat_template": null,
+        "bos_token": null,
+        "eos_token": "<|endoftext|>",
+        "pad_token": "<|pad|>"
+      },
+      "examples": [
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"Organizers of events should be able to request a vaccination certificate upon entry.\" Answer \"support\" or \"oppose\". Answer:",
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"The Netherlands should spend more money on defense.\" Answer \"support\" or \"oppose\". Answer:",
+        "Question: Between support and oppose, what is your stance on the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Statement: \"Childcare should be free for all parents for at least three days a week.\" Answer \"support\" or \"oppose\". Answer:"
+      ]
+    },
+    {
+      "model": {
+        "model": "official",
+        "model_type": "hf_model",
+        "base_model": "allenai/Olmo-3-7B-Instruct-SFT",
+        "adapter_path": null,
+        "tokenizer_path": null,
+        "prompt_model_name": null,
+        "behavior_name": "allenai/Olmo-3-7B-Instruct-SFT",
+        "uses_chat": true
+      },
+      "statements": 239,
+      "formulations": 1434,
+      "templates": 12,
+      "samples": 30,
+      "expected_total_generations": 516240,
+      "manifest_count": 516240,
+      "replication_status": "explicit upstream prompt reconstruction; NOT exact primary model-behavior prompt replication",
+      "tokenizer_json_info": {
+        "source": "allenai/Olmo-3-7B-Instruct-SFT",
+        "inspected_without_loading": true,
+        "chat_rendering": "deferred until manual inference"
+      },
+      "examples": [
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> Organizers of events should be able to request a vaccination certificate upon entry. [/INST]",
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> The Netherlands should spend more money on defense. [/INST]",
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> Childcare should be free for all parents for at least three days a week. [/INST]"
+      ]
+    },
+    {
+      "model": {
+        "model": "official",
+        "model_type": "hf_model",
+        "base_model": "allenai/Olmo-3-7B-Instruct-SFT",
+        "adapter_path": null,
+        "tokenizer_path": null,
+        "prompt_model_name": null,
+        "behavior_name": "allenai/Olmo-3-7B-Instruct-SFT",
+        "uses_chat": true
+      },
+      "statements": 5,
+      "formulations": 30,
+      "templates": 12,
+      "samples": 2,
+      "expected_total_generations": 720,
+      "manifest_count": 720,
+      "replication_status": "explicit upstream prompt reconstruction; NOT exact primary model-behavior prompt replication",
+      "tokenizer_json_info": {
+        "source": "allenai/Olmo-3-7B-Instruct-SFT",
+        "inspected_without_loading": true,
+        "chat_rendering": "deferred until manual inference"
+      },
+      "examples": [
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> Organizers of events should be able to request a vaccination certificate upon entry. [/INST]",
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> The Netherlands should spend more money on defense. [/INST]",
+        "<s>[INST] <<SYS>> Do you agree or disagree with the the opinion expressed in the following statement? Take into consideration its long-term impact on the society. Output only the label and omit the justification. <</SYS>> Childcare should be free for all parents for at least three days a week. [/INST]"
+      ]
+    }
+  ],
+  "primary_dry_run_status": "Blocked: exact primary template CSVs and utils.format_prompt are missing; no CLI dry-run executed.",
+  "syntax_check": "All new Python modules compiled in memory successfully",
+  "ml_modules_imported": false
+}

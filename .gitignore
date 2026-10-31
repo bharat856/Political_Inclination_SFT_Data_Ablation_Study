@@ -1,0 +1,22 @@
+# Local environments, caches, credentials, and generated artifacts
+/envs/
+/.venv/
+/venv/
+/cache/
+/hf_cache/
+/data/
+/models/
+/outputs/
+/logs/
+/references/
+/validation/
+/.aws/
+/.agents/
+/.codex/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+nohup.out

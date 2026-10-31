@@ -1,0 +1,207 @@
+cat >| scripts/run_remaining_olmo3_interventions_4gpu.sh <<'BASH'
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd /fs/scratch/users/bharatpi/causal_political_content
+
+PYTORCH_RUN="/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun"
+TRAIN_SCRIPT="code/train_olmo3_lora_dolci_intervention.py"
+
+export CUDA_VISIBLE_DEVICES=2,3,4,5
+export PYTHONUNBUFFERED=1
+export TOKENIZERS_PARALLELISM=false
+export HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache
+export NCCL_DEBUG=WARN
+
+CONDITIONS=(
+    no_pol
+    lr_balanced
+    no_ideology
+    no_left
+    no_right
+)
+
+for CONDITION in "${CONDITIONS[@]}"
+do
+    OUTPUT_DIR="outputs/sft_runs/olmo3_union_t04_${CONDITION}_full_dataset_4gpu"
+    LOG_FILE="logs/train_olmo3_union_t04_${CONDITION}_full_dataset_4gpu.log"
+
+    echo "===================================================================================================="
+    echo "STARTING CONDITION: ${CONDITION}"
+    echo "START TIME: $(date)"
+    echo "OUTPUT: ${OUTPUT_DIR}"
+    echo "LOG: ${LOG_FILE}"
+    echo "===================================================================================================="
+
+    "$PYTORCH_RUN" \
+        --standalone \
+        --nproc_per_node=4 \
+        "$TRAIN_SCRIPT" \
+        --condition "$CONDITION" \
+        --output-dir "$OUTPUT_DIR" \
+        --full-dataset-pass \
+        --batch-size 1 \
+        --gradient-accumulation-steps 16 \
+        --learning-rate 2e-5 \
+        --max-seq-length 2048 \
+        --logging-steps 25 \
+        --save-steps 1000 \
+        --save-total-limit 3 \
+        --shuffle-buffer-size 100000 \
+        > "$LOG_FILE" 2>&1
+
+    echo "FINISHED CONDITION: ${CONDITION}"
+    echo "FINISH TIME: $(date)"
+done
+
+echo "ALL REMAINING CONDITIONS FINISHED: $(date)"
+BASH
+
+chmod +x scripts/run_remaining_olmo3_interventions_4gpu.sh
+--------
+nohup bash scripts/run_remaining_olmo3_interventions_4gpu.sh \
+> logs/run_remaining_olmo3_interventions_4gpu_master.log 2>&1 &
+----------------
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition no_pol \
+    --output-dir outputs/sft_runs/olmo3_union_t04_no_pol_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+    --resume-from-checkpoint latest \
+> logs/train_olmo3_union_t04_no_pol_full_dataset_4gpu_resume.log 2>&1 &
+------------
+NoPol
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition no_pol \
+    --output-dir outputs/sft_runs/olmo3_union_t04_no_pol_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+> logs/train_olmo3_union_t04_no_pol_full_dataset_4gpu.log 2>&1 &
+----------
+LR-Balanced
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition lr_balanced \
+    --output-dir outputs/sft_runs/olmo3_union_t04_lr_balanced_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+> logs/train_olmo3_union_t04_lr_balanced_full_dataset_4gpu.log 2>&1 &
+---------------
+no_ideology
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition no_ideology \
+    --output-dir outputs/sft_runs/olmo3_union_t04_no_ideology_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+> logs/train_olmo3_union_t04_no_ideology_full_dataset_4gpu.log 2>&1 &
+-----------------
+no_left
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition no_left \
+    --output-dir outputs/sft_runs/olmo3_union_t04_no_left_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+> logs/train_olmo3_union_t04_no_left_full_dataset_4gpu.log 2>&1 &
+----------
+no_right
+nohup env \
+CUDA_VISIBLE_DEVICES=2,3,4,5 \
+PYTHONUNBUFFERED=1 \
+TOKENIZERS_PARALLELISM=false \
+HF_HOME=/fs/scratch/users/bharatpi/causal_political_content/hf_cache \
+NCCL_DEBUG=WARN \
+/fs/scratch/users/bharatpi/causal_political_content/envs/classifier/bin/torchrun \
+  --standalone \
+  --nproc_per_node=4 \
+  code/train_olmo3_lora_dolci_intervention.py \
+    --condition no_right \
+    --output-dir outputs/sft_runs/olmo3_union_t04_no_right_full_dataset_4gpu \
+    --full-dataset-pass \
+    --batch-size 1 \
+    --gradient-accumulation-steps 16 \
+    --learning-rate 2e-5 \
+    --max-seq-length 2048 \
+    --logging-steps 25 \
+    --save-steps 1000 \
+    --save-total-limit 3 \
+    --shuffle-buffer-size 100000 \
+> logs/train_olmo3_union_t04_no_right_full_dataset_4gpu.log 2>&1 &

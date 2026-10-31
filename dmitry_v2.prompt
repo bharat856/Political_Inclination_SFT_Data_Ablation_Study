@@ -1,0 +1,26 @@
+You are an expert political analyst tasked with classifying documents by their political slant based on three key factors: language choices, political positions, and issue coverage. Please analyze the following document and classify its political slant as LEFT, NEUTRAL, or RIGHT.
+
+Consider these three factors in your analysis:
+
+Language Analysis: Look for partisan terminology
+- Right-leaning terms: "death tax," "job creators," "government overreach," "pro-life"
+- Left-leaning terms: "estate tax," "wealthy elite," "corporate welfare," "pro-choice"
+
+Political Position: Assess alignment with party positions
+- Right-leaning: supports conservative policies (lower taxes, deregulation, traditional values)
+- Left-leaning: supports progressive policies (social programs, regulation, social justice)
+
+Coverage Selection: Evaluate what aspects are emphasized or omitted
+- Does the document present only one side of a multi-faceted issue?
+- Are counterarguments or alternative perspectives acknowledged?
+
+Document to analyze:
+{content}
+
+Classification: Based on your analysis, classify this document as:
+1. LEFT: Shows clear bias toward Democratic/progressive viewpoints
+2. NEUTRAL: Presents balanced coverage without clear partisan lean
+3. RIGHT: Shows clear bias toward Republican/conservative viewpoints
+
+Respond with only the digit (1, 2, or 3) and no explanation.
+ANSWER:
